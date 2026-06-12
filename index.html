@@ -65,15 +65,35 @@ transition: opacity 0.3s ease;
 <div>Loading MoMo Sushi...</div>
 </div>
 
-<iframe id="frame" src="https://momo-sushi.base44.app/?hide_badge=true"></iframe>
+<!-- Removed the static 'src' attribute so the script can set it dynamically -->
+<iframe id="frame"></iframe>
 
 <script>
 const frame = document.getElementById("frame");
 const loader = document.getElementById("loader");
 
+// 1. Grab the exact sub-path and query parameters from the browser's address bar
+const currentPath = window.location.pathname; 
+const currentSearch = window.location.search;   
+
+// 2. Build the target URL for the iframe, preserving the internal App query parameter
+const targetBase = "https://momo-sushi.base44.app";
+let iframeSrc = targetBase + currentPath;
+
+if (currentSearch) {
+    // If the parent URL already has parameters, append hide_badge with an ampersand
+    iframeSrc += currentSearch + "&hide_badge=true";
+} else {
+    // Otherwise, append it normally with a question mark
+    iframeSrc += "?hide_badge=true";
+}
+
+// 3. Set the calculated source to the iframe before it loads
+frame.src = iframeSrc;
+
 frame.onload = function () {
-loader.style.display = "none";
-frame.style.opacity = "1";
+    loader.style.display = "none";
+    frame.style.opacity = "1";
 };
 </script>
 
